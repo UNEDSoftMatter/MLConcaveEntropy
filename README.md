@@ -24,7 +24,7 @@ mail: a.vazquez-quesada@fisfun.uned.es
 The compilation is done with the makefile file. 
 To compile, just write the following command in the command line:
 
-make
+make -j
 
 The file neural_network_program will be created, which is the executable.
 
@@ -36,13 +36,13 @@ make clean
 
 You need to have the following files in the same directory (with the exact names shown below):
 
-- **neural_network_program**: the executable.
+- **MLConcaveEntropy**: the executable.
 - **input**: a file containing the program inputs.
 - **data.dat**: the data to be fitted by the neural network.
 
 To run the program, execute:
 
-./neural_network_program
+./MLConcaveEntropy
 
 ## Input Variables
 
