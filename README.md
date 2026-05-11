@@ -38,7 +38,16 @@ You need to have the following files in the same directory (with the exact names
 
 - **MLConcaveEntropy**: the executable.
 - **input**: a file containing the program inputs.
-- **data.dat**: the data to be fitted by the neural network.
+- **data1.dat**: First data file with the function Phi, obtained from the first simulation. Three columns: E, V, Phi. 
+- **data2.dat**: Second data file with he function Phi, obtained from the second simulation. Three columns: E, V, Phi.
+- ...
+- **dataN.dat**: Nth data file with he function Phi, obtained from the Nth simulation. Three columns: E, V, Phi.
+
+The calculation of the function Phi is obtained from the probability P(E,V) of the system to be in the state (E,V) as
+
+<p align="center">
+  <img src="images/Phi_function.png" width="500"><br>
+</p>
 
 To run the program, execute:
 
