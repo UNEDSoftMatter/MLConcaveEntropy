@@ -70,12 +70,19 @@ To run the program, execute:
 
 **epsilon_adam**          -> ADAM optimizer parameter used for numerical stability
 
-**Nfiles**                -> This variable is not currently used and will be removed in future updates
+**Nfiles**                -> Number of files with probabilities of states (E,V). Each file will correspond to a different simulation.
 
 **freq_loss_function**    -> Frequency (in iterations) at which the loss function value is written to the file `loss_function.dat`
 
 **freq_gnu_file**         -> Frequency (in iterations) at which the file `approx_function-%d.gnu` is generated, where `%d` is the iteration number.  
                              This file is a gnuplot script used to plot the fitted function
+
+
+**new_calculation**       -> 0.- The calculation starts from scratch.
+ 
+                             Non-zero.- The calculation starts from a previous run. In this case, you must use the last approx*.gnu file generate in the previous 
+                             calculation and rename it as weights.gnu. This file must be located in the same directory as the input file for the calculation to run.
+
 
 
 ## Data File
