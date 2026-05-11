@@ -26,7 +26,7 @@ To compile, just write the following command in the command line:
 
 make -j
 
-The file neural_network_program will be created, which is the executable.
+The file MLConcaveEntropy will be created, which is the executable.
 
 If you want to clean everthing before compiling again, just do
 
