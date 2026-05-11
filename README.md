@@ -96,4 +96,5 @@ The file `data.dat` must contain three columns corresponding to the x-, y-, and 
 This is a script for the gnuplot program used to plot the function fitted by the neural network. To run it, simply execute:
 
   gnuplot approx_function-%d.gnu 
+  
 Every weight of the neural network can be extracted from the approx*.gnu files.
