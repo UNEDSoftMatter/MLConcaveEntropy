@@ -85,6 +85,11 @@ To run the program, execute:
                              Non-zero.- The calculation starts from a previous run. In this case, you must use the last approx*.gnu file generate in the previous 
                              calculation and rename it as weights.gnu. This file must be located in the same directory as the input file for the calculation to run.
 
+**steps_to_initialize**   -> The program does not save the variables of the ADAM method, so when a calculation is restarted, it is convenient to reduce the learning rate during 
+                             the first steps of the calculation. This variable specifies the number of steps for which this reduction is applied.
+
+**initial_reduction_eta** -> The factor by which the lerarning rate is reduced during the initial time steps when the calculation is restarted from a previous run.
+
 
 
 ## Data File
