@@ -399,7 +399,7 @@ int main() {
 							   positive);    
     
     //--- Loss function is calculated and written ---
-    if (step % freq_loss_function == 0 || step != 0) 
+    if (step % freq_loss_function == 0 || step == 0) 
       sys.print_loss_function(numBlocks, threadsPerBlock, batch, k_loss_function,
 			      k_exit_value, k_batch_index, k_batch_N, k_data, step);
     //--- GNUplot file with the weights is written --
