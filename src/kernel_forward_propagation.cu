@@ -1,0 +1,105 @@
+/******************************************************
+This code has been developed by Adolfo Vazquez-Quesada,
+from the Department of Fundamental Physics at UNED, in
+Madrid, Spain.
+email: a.vazquez-quesada@fisfun.uned.es
+********************************************************/
+
+#include "kernel_functions.h"
+#include "config.h"
+#include <stdio.h>
+
+
+//--- Function to propagate values through the neural network ---
+__global__ void kernel_forward_propagation(int batch,
+					   int*   __restrict__ batch_index,
+					   int*   __restrict__ batch_N,
+					   int*   __restrict__ batch_file,
+					   real*  __restrict__ data,
+					   real** __restrict__ W_hidden,
+					   real** __restrict__ V_hidden,
+					   real** __restrict__ b_hidden,
+					   real*  __restrict__ W_out,
+					   real*  __restrict__ V_out,
+					   real*  __restrict__ b_out,
+					   real*  __restrict__ phi,
+					   real** __restrict__ z,
+					   real** __restrict__ a,
+					   real*  __restrict__ exit_value) {
+  
+  int i = threadIdx.x + blockIdx.x * blockDim.x;
+
+  //-- imax is the maximum number of threads --
+  int imax = batch_N[batch];
+  if (i >= imax) return;
+  // i is the data i of the batch 'batch'
+
+  int row       = batch_index[batch]; //batch starts in this row of the data array
+  int start_pos = row*3 + i*3;
+  real xdata    = data[start_pos];
+  real ydata    = data[start_pos + 1];
+  //  real zdata    = data[start_pos + 2];
+
+  //--- indices ranges:   ---
+  // z_j^(k) = sigma_act(sum_i w_ji^(k) * z_i^(k-1) + b_j^(k))
+  // w_0_0 -> 0
+  // w_0_1 -> 1
+  // ...
+  // w_0_Nneurons -> Nneurons - 1
+  // w_1_0 -> Nneurons
+  // w_1_1 -> Nneurons + 1
+  // ...
+  // w_1_Nneurons -> 2 * Nneurons - 1
+  // ...
+  //---  In general: w_mn -> m * Nneurons + n; here m goes from 0 to Nneurons - 1 ----
+  // a_0, data0 -> 0
+  // a_1, data0 -> 1
+  // ...
+  // a_Nneurons, data0 -> Nneurons - 1
+  // a_0, data1 -> Nneurons
+  // a_1, data1 -> Nneurons + 1
+  // ...
+  // a_Nneurons, data1 -> 2 * Nneurons - 1
+  // ...
+  //--- In general: a_n, data m -> m * Nneurons + n; here m goes from 0 to imax - 1 ---  
+
+  //--- Propagation through the first hidden layer ---
+  for (int n = 0; n < Nneurons; n++) {
+    a[0][n + i*Nneurons] = W_hidden[0][n           ] * xdata +
+                           W_hidden[0][n + Nneurons] * ydata +
+                           V_hidden[0][n           ] * xdata +
+                           V_hidden[0][n + Nneurons] * ydata +      
+                           b_hidden[0][n];
+
+    // In each neuron we store as many values as number of data of the batch.
+    // i is the identifier of the data of the batch, typically between 0 and
+    // N_per_batch (except in the last batch)
+    z[0][n + i*Nneurons] = kernel_activation_function(a[0][n + i*Nneurons]);
+  }
+
+  //--- Propagation through the rest of hidden layers ---
+  for (int k = 1; k < Nhidden; k++)       // Layers
+    for (int n = 0; n < Nneurons; n++) {  // Origin neuron
+
+      // The initialization of a is done directly with the bias and propagation
+      // from the input data with weights V
+      a[k][n + i*Nneurons] = V_hidden[k][n           ] * xdata +
+                             V_hidden[k][n + Nneurons] * ydata +      
+	                     b_hidden[k][n];      
+      for (int m = 0; m < Nneurons; m++) { //Destiny neuron
+	// We add W_nm^(k) * z_m^(k-1)
+	a[k][n + i*Nneurons] = a[k][n + i*Nneurons] +
+	  W_hidden[k][n + m*Nneurons] * z[k-1][m + i*Nneurons];
+      }
+      // In each neuron we store as many values as number of data of the batch.
+      // i is the identifier of the data of the batch, typically between 0 and
+      // N_per_batch (except in the last batch)      
+      z[k][n + i*Nneurons] = kernel_activation_function(a[k][n + i*Nneurons]);
+    }
+
+  //--- Propagation from the last hidden layer to the exit ---
+  // exit_val = sum_j Wout_j * z_j + sum_j Voutj * xj + b_out + phi_file
+  exit_value[i] = V_out[0] * xdata + V_out[1] * ydata + b_out[0] + phi[batch_file[batch]];
+  for (int n = 0; n < Nneurons; n++) 
+    exit_value[i] = exit_value[i] + W_out[n] * z[Nhidden-1][n + i*Nneurons];
+}

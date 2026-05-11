@@ -1,0 +1,24 @@
+# Inputs for the neural network program
+
+  Nneurons  10
+  Nhidden   2
+
+  Niterations 100000000
+  N_per_batch 200
+
+  initialization 2
+  epsilon 1.0  
+  eta 0.001
+  beta1   0.9
+  beta2   0.999
+  epsilon_adam 1.0e-8
+
+   Nfiles 10
+
+  freq_loss_function  100
+  freq_gnu_file       100000
+
+  new_calculation       1
+  steps_to_initialize   100000
+  initial_reduction_eta 100
+  
