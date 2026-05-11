@@ -78,7 +78,9 @@ To run the program, execute:
                              This file is a gnuplot script used to plot the fitted function
 
 
-**new_calculation**       -> 0.- The calculation starts from scratch.
+**new_calculation**       -> Is this a new calculation, or is it continuing from a previous one?
+
+                             0.- The calculation starts from scratch.
  
                              Non-zero.- The calculation starts from a previous run. In this case, you must use the last approx*.gnu file generate in the previous 
                              calculation and rename it as weights.gnu. This file must be located in the same directory as the input file for the calculation to run.
